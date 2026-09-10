@@ -10,6 +10,7 @@ AI / software / operations / architecture に関する **reference knowledge bas
 - 「何を知っているか」だけでなく、由来・確度・鮮度を残す
 - 将来の model routing / architecture / operations 判断に使える材料を増やす
 - 正本 repository や private operational state と reference knowledge を分離する
+- AI や runtime を交換しても再利用できる一般化された経験知を増やす
 
 ## Boundary
 
@@ -56,14 +57,18 @@ references/
 ├─ schema/
 │  └─ reference-entry.md
 ├─ knowledge/
+│  ├─ README.md
 │  ├─ architecture/
 │  ├─ ai-routing/
-│  └─ operations/
+│  ├─ economics/
+│  ├─ insight/
+│  ├─ operations/
+│  └─ platform/
 └─ intake/
    └─ README.md
 ```
 
-`intake/` は未整理の観測置き場、`knowledge/` は再利用可能な形へ整理した知見です。
+`intake/` は未整理の観測置き場、`knowledge/` は再利用可能な形へ整理した知見です。`knowledge/README.md` はカテゴリと昇格ルールの案内です。
 
 ## Rule of thumb
 
