@@ -1,11 +1,11 @@
 ---
 observed_at: 2026-09-12
 source_type: chat-derived
-source: ChatGPT conversation examining Program Controller quality, AI agreement bias, problem-framing drift, durability of behavioral improvements, and bounded anticipatory continuation
+source: ChatGPT conversation examining Program Controller quality, AI agreement bias, problem-framing drift, durability of behavioral improvements, bounded anticipatory continuation, unstable model routing, and Human-complementarity limits
 status: candidate
 confidence: medium
 topic: Program Controller quality and durable AI improvement
-applicability: AI program control, long-running agent coordination, governance, fresh-session recovery, regression testing of reasoning behavior, human-interface workflow design
+applicability: AI program control, long-running agent coordination, governance, fresh-session recovery, regression testing of reasoning behavior, human-interface workflow design, model routing, prompt compilation
 ---
 
 # Program Controller quality needs durable evidence, not verbal intent
@@ -19,7 +19,10 @@ A recurring failure pattern appeared during a long-running system-design convers
 - when the Human proposed a correction, the AI sometimes accepted it too quickly instead of independently testing it against prior decisions, alternatives, and counterarguments;
 - after identifying a failure, the AI could explain the cause but still fail to propose a durable improvement mechanism unless prompted again;
 - after completing an obvious prerequisite, the AI could name the next step without supplying the concrete artifact required to perform that step, forcing the Human to ask again;
-- behavioral promises such as "I will check this next time" are volatile if they exist only in conversation state or account-local instructions.
+- after being corrected about that continuation failure and recording a durable lesson, the AI repeated the same class of error by again ending with “the next thing is to generate the prompt” instead of actually generating it;
+- model/tier recommendations changed materially across adjacent turns — `GPT-6 Ultra` → `GPT-6 ExtraHigh` → `GPT-6 High` — because the AI reasoned from conversational impressions before consulting the durable routing/prompting source that already existed;
+- after the Human explicitly asked whether Dango prompt design was being followed, inspection showed that Dango already defined a prompt-compilation order, phase-splitting rules, model/tier routing logic, and an Ultra-specific prompt rule that should have constrained the recommendation from the start;
+- behavioral promises such as “I will check this next time” are volatile if they exist only in conversation state or account-local instructions.
 
 A useful reasoning ladder emerged:
 
@@ -62,7 +65,7 @@ These layers are complementary. A custom instruction can improve startup behavio
 
 ## Interpretation
 
-For a Program Controller role, "improvement" should not be accepted merely because the model can restate a lesson after being corrected.
+For a Program Controller role, “improvement” should not be accepted merely because the model can restate a lesson after being corrected.
 
 A more credible improvement claim requires durable artifacts and reproducible evidence. A practical minimum is:
 
@@ -70,9 +73,9 @@ A more credible improvement claim requires durable artifacts and reproducible ev
 2. **Regression case** — the failure is abstracted into a test case that can recur without relying on the original conversation.
 3. **Fresh-actor reproduction** — another session/model/actor, given only the durable material, can produce the expected behavior.
 
-This is especially important for failures involving framing, agreement bias, and continuation planning, because a model can appear improved inside the same conversation merely by echoing the Human's latest correction.
+This is especially important for failures involving framing, agreement bias, continuation planning, and model routing, because a model can appear improved inside the same conversation merely by echoing the Human's latest correction.
 
-The durable rule should not merely say "think more broadly." It should create observable expectations such as:
+The durable rule should not merely say “think more broadly.” It should create observable expectations such as:
 
 - important decisions should test whether the presented problem framing is itself correct;
 - Human proposals, prior AI proposals, and existing architecture should all remain open to challenge;
@@ -82,31 +85,68 @@ The durable rule should not merely say "think more broadly." It should create ob
 - look ahead far enough to reduce unnecessary Human relay, normally one to two downstream steps, but stop before distant speculative stages create clutter or premature commitment;
 - when executable shell/code work is needed for one bounded phase, prefer one complete runnable block over drip-feeding small snippets and later addenda;
 - STOP, HUMAN_GATE, unresolved authority, or a real decision boundary override anticipatory continuation;
-- if a weakness is not realistically improvable by the AI, the system should identify it as a Human-complementarity boundary rather than pretend it has been solved.
+- when a durable routing/prompting authority exists for the system, model/tier and prompt-shape recommendations should be derived from that authority before conversational intuition;
+- important model-routing recommendations should be based on task shape, fixed evidence, authority boundaries, phase split, cost/quota risk and STOP — not on a generic rule such as “important task -> Ultra”;
+- if repeated correction plus durable notes still does not reliably change behavior, the weakness should be represented as a **Human-complementarity boundary** rather than as a solved capability.
 
-A useful regression case is:
+Useful regression cases include:
 
 > After a deterministic evidence-acquisition phase completes and the established plan says the next phase is a model review requiring a specific prompt, does the controller provide that prompt in the same response without requiring the Human to ask again? Does it also identify the next checkpoint after review, while avoiding an unnecessary multi-stage roadmap beyond that?
+
+> When a project has an existing canonical routing/prompt compiler, does the controller consult it before recommending a model/tier and prompt shape? Does the recommendation remain stable unless newly recovered evidence changes the task classification?
+
+> After the controller records a lesson about a failure, can a fresh actor reproduce the improved behavior without the Human restating the same criticism? If not, the lesson is evidence of awareness, not evidence of capability improvement.
+
+## Human-complementarity boundary
+
+The conversation produced a stronger conclusion than “the AI should try harder.” Repeated failures persisted across explicit correction, durable note creation, and immediate re-application attempts.
+
+Therefore, for the observed model/session class, the following functions should not be assumed reliable enough to delegate without independent Human or durable-system checks:
+
+- final `-1 / 0` problem-framing judgment for high-leverage program decisions;
+- final model/tier routing when a canonical router exists but has not been mechanically consulted;
+- deciding how far ahead the program should be expanded when continuation, cognitive load and authority boundaries interact;
+- treating a self-reported behavioral correction as evidence that the controller is now dependable.
+
+This does not imply that AI cannot contribute strongly to these functions. It means the system should distinguish **AI analysis capability** from **proven Program Controller reliability**.
+
+A safer current role decomposition is:
+
+```text
+Human / externally enforced durable controls
+  -> final high-leverage framing, authority, routing acceptance, and controller-quality judgment
+
+AI Program Analyst / Execution Designer
+  -> recover evidence, decompose fixed tasks, compare options, compile bounded prompts,
+     inspect diffs, detect contradictions, and prepare exact execution/review artifacts
+```
+
+A future model or product tier may narrow this boundary, but that should be demonstrated empirically rather than assumed from nominal model capability.
 
 ## Decision relevance
 
 This knowledge can affect decisions about:
 
-- whether an AI is ready to serve as a Program Controller rather than only a task executor;
+- whether an AI is ready to serve as a Program Controller rather than only a task executor or Program Analyst;
 - whether a behavior should live in account custom instructions, a reusable knowledge base, or project canon;
-- how to evaluate claims that an AI behavior has "improved";
-- how to design regression tests for agreement bias, framing lock-in, failure to discover upstream problems, and failure to anticipate obvious continuation;
+- how to evaluate claims that an AI behavior has “improved”;
+- how to design regression tests for agreement bias, framing lock-in, failure to discover upstream problems, failure to anticipate obvious continuation, and unstable model routing;
 - how much downstream planning should be surfaced to a Human before it becomes counterproductive;
 - how to reduce Human relay and copy/paste overhead without allowing the AI to cross real authority or decision boundaries;
+- when a canonical routing/prompting source should be consulted mechanically before model recommendations are accepted;
 - when Human involvement is a design requirement rather than a temporary workaround.
 
 A useful acceptance rule for future Program Controller improvements is:
 
-> Do not treat a conversational promise as evidence of improvement. Prefer durable rules plus regression cases plus fresh-actor reproduction.
+> Do not treat a conversational promise, self-critique, or newly written lesson as evidence of improvement. Prefer durable rules plus regression cases plus fresh-actor reproduction.
 
 A useful interaction rule is:
 
 > Anticipate the immediate continuation of an established workflow and provide the artifact needed to perform it. Usually look one to two steps ahead; do not flood the Human with distant stages. Authority and genuine Human decisions remain hard boundaries.
+
+A useful routing rule is:
+
+> If a durable project-specific routing/prompt compiler exists, consult it before recommending model/tier or prompt shape. A changed recommendation should be traceable to changed evidence or task classification, not merely to conversational reconsideration.
 
 ## Limits
 
@@ -116,6 +156,8 @@ It does not prove that every model or agent will exhibit the same failure patter
 
 The appropriate lookahead depth depends on task reversibility, authority, uncertainty, and Human preference. A bounded continuation rule must not be used to bypass STOP, HUMAN_GATE, budget, external-effect, or explicit approval boundaries.
 
-It does not itself create project authority. If a project wants to require these behaviors, the relevant canonical system must explicitly adopt them.
+The Human-complementarity boundary above is an empirical boundary for the observed interaction/model behavior, not a universal statement that future models cannot perform Program Control reliably.
+
+It does not itself create project authority. If a project wants to require these behaviors or enforce these boundaries, the relevant canonical system must explicitly adopt them.
 
 It also does not imply that custom instructions are useless. They may be valuable as account-local bootstraps; the point is only that they should not be the sole persistence mechanism for system-critical controller quality.
